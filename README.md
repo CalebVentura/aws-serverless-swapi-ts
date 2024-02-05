@@ -1,49 +1,72 @@
-# Serverless Framework Node HTTP API on AWS
+# Serverless Framework - TypeScript - DynamoDB - AWS Gateway - AWS Lambda
 
 Este es un proyecto en el cual se usa TypeScript, AWS Lambda, DynamoDB y Serverless para desplegar funcions en la nube de AWS.
 
-## Previos
-```
-$ git clone https://github.com/CalebVentura/aws-serverless-swapi-ts
-$ cd aws-serverless-swapi-ts
-$ npm i
-$ npx tsc
+## Pasos previos
+NodeJs + 18.x.x
+```bash
+# Clonado del repositorio
+git clone https://github.com/CalebVentura/aws-serverless-swapi-ts
+
+# Ir al directorio
+cd aws-serverless-swapi-ts
+
+# Instalación de paquetes
+npm i
+
+# Compilación de TypeScript
+npx tsc
 ```
 
-### Deployment
+### Despliegue
 
-```
-$ serverless deploy
+```bash
+serverless deploy
 ```
 
 Después de hacer deployment se debe ver un resultado de este tipo:
 
 ```bash
-Deploying aws-node-http-api-project to stage dev (us-east-1)
+Deploying aws-serverless-swapi-dev to stage dev (us-east-1)
 
-✔ Service deployed to stack aws-node-http-api-project-dev (152s)
+✔ Service deployed to stack aws-serverless-swapi-dev (53s)
 
-endpoint: GET - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/
+endpoints:
+  GET - https://9y5f34o3v0.execute-api.us-east-2.amazonaws.com/
+  GET - https://9y5f34o3v0.execute-api.us-east-2.amazonaws.com/swapi/{resource}
+  POST - https://9y5f34o3v0.execute-api.us-east-2.amazonaws.com/people
+  GET - https://9y5f34o3v0.execute-api.us-east-2.amazonaws.com/people
+  GET - https://9y5f34o3v0.execute-api.us-east-2.amazonaws.com/people/{id}
+  PUT - https://9y5f34o3v0.execute-api.us-east-2.amazonaws.com/people/{id}
+  DELETE - https://9y5f34o3v0.execute-api.us-east-2.amazonaws.com/people/{id}
 functions:
-  hello: aws-node-http-api-project-dev-hello (1.9 kB)
+  api: aws-serverless-swapi-dev-api (18 MB)
+  swapi: aws-serverless-swapi-dev-swapi (18 MB)
+  postPerson: aws-serverless-swapi-dev-postPerson (18 MB)
+  getPerson: aws-serverless-swapi-dev-getPerson (18 MB)
+  getOnePerson: aws-serverless-swapi-dev-getOnePerson (18 MB)
+  updatePerson: aws-serverless-swapi-dev-updatePerson (18 MB)
+  deletePerson: aws-serverless-swapi-dev-deletePerson (18 MB)
 ```
 
-_Note_: In current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [http event docs](https://www.serverless.com/framework/docs/providers/aws/events/apigateway/).
+### Uso
 
-### Invocation
-
-After successful deployment, you can call the created application via HTTP:
+Cuando el deploy sea satisfactorio se puede consultar a la siguiente endpoint de prueba usando curl:
 
 ```bash
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/
+curl https://9y5f34o3v0.execute-api.us-east-2.amazonaws.com/
 ```
 
-Which should result in response similar to the following (removed `input` content for brevity):
+Este debe devolver un resultado como el siguiente:
 
 ```json
 {
-  "message": "Go Serverless v2.0! Your function executed successfully!",
+  "message": "API funcionando correctamente",
   "input": {
+    "version": "2.0",
+    "routeKey": "GET /",
+    "rawPath": "/",
+    "rawQueryString": "",
     ...
   }
 }
@@ -51,34 +74,114 @@ Which should result in response similar to the following (removed `input` conten
 
 ### Local development
 
-You can invoke your function locally by using the following command:
+Localmente se puede invocar a las funciones de la siguiente manera:
 
 ```bash
-serverless invoke local --function hello
+serverless invoke local --function getPerson
 ```
 
-Which should result in response similar to the following:
+Y se recibirá un resultado como el siguiente:
 
 ```
 {
-  "statusCode": 200,
-  "body": "{\n  \"message\": \"Go Serverless v3.0! Your function executed successfully!\",\n  \"input\": \"\"\n}"
+    "status": 200,
+    "message": "GET people successful",
+    "data": [
+        {
+            "naves": [],
+            "nombre": "KALI",
+            "color_cabello": "n/a",
+            "nacimiento": "112BBY",
+            "vehiculos": [],
+            "createdAt": {},
+            "estatura": "189",
+            "url": "https://swapi.dev/api/people/2/",
+            "peso": "67",
+            "peliculas": [
+                "https://swapi.dev/api/films/1/",
+                "https://swapi.dev/api/films/2/",
+                "https://swapi.dev/api/films/4/",
+                "https://swapi.dev/api/films/6/"
+            ],
+            "planeta": "https://swapi.dev/api/planets/1/",
+            "color_piel": "silver",
+            "especies": [
+                "https://swapi.dev/api/species/2/"
+            ],
+            "id": "790701f0-cd05-4332-bdf8-bdc39dd69d62",
+            "color_ojos": "red",
+            "genero": "n/a"
+        },
+        ...
+    ]
 }
 ```
 
+## Consumo de APIS
 
-Alternatively, it is also possible to emulate API Gateway and Lambda locally by using `serverless-offline` plugin. In order to do that, execute the following command:
-
-```bash
-serverless plugin install -n serverless-offline
+### GET - Obtener datos del api original
+```
+https://9y5f34o3v0.execute-api.us-east-2.amazonaws.com/swapi/{resource}
 ```
 
-It will add the `serverless-offline` plugin to `devDependencies` in `package.json` file as well as will add it to `plugins` in `serverless.yml`.
+Donde resource puede tomar los siguiente valores: people, films, starships, vehicles, species y planets.
 
-After installation, you can start local emulation with:
+Esto devolverá como resultado todos los elementos que corresponden a la entidad "resource".
 
+### POST - Crear un personaje
 ```
-serverless offline
+https://9y5f34o3v0.execute-api.us-east-2.amazonaws.com/people
 ```
-
-To learn more about the capabilities of `serverless-offline`, please refer to its [GitHub repository](https://github.com/dherault/serverless-offline).
+Esto creará un personaje y se le asignará un id, el cual será usado en otras endpoints.
+Ejemplo:
+```json
+{
+  "status": 200,
+  "message": "POST people successful",
+  "data": [
+    {
+      "id": "790701f0-cd05-4332-bdf8-bdc39dd69d62",
+      "nombre": "KALI",
+      "estatura": "167",
+      "peso": "75",
+      "color_cabello": "n/a",
+      "color_piel": "gold",
+      "color_ojos": "yellow",
+      "nacimiento": "112BBY",
+      "genero": "n/a",
+      "planeta": "https://swapi.dev/api/planets/1/",
+      "peliculas": [
+        "https://swapi.dev/api/films/1/",
+        "https://swapi.dev/api/films/2/",
+        "https://swapi.dev/api/films/3/",
+        "https://swapi.dev/api/films/4/",
+        "https://swapi.dev/api/films/5/",
+        "https://swapi.dev/api/films/6/"
+      ],
+      "especies": [
+        "https://swapi.dev/api/species/2/"
+      ],
+      "vehiculos": [],
+      "naves": [],
+      "url": "https://swapi.dev/api/people/2/",
+      "createdAt": "2024-02-05T14:40:42.210Z"
+    }
+  ]
+}
+```
+### GET - Obtener todos los personajes
+```
+https://9y5f34o3v0.execute-api.us-east-2.amazonaws.com/people
+```
+### GET - Obtener un personaje por id
+```
+https://9y5f34o3v0.execute-api.us-east-2.amazonaws.com/people/{id}
+```
+### PUT - Actualizar un personaje por id
+```
+https://9y5f34o3v0.execute-api.us-east-2.amazonaws.com/people/{id}
+```
+### DELETE - Eliminar un personaje por id
+```
+https://9y5f34o3v0.execute-api.us-east-2.amazonaws.com/people/{id}
+```
