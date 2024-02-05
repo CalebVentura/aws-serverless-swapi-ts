@@ -1,0 +1,80 @@
+service: aws-serverless-swapi
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-2
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:*
+          Resource:
+            - arn:aws:dynamodb:us-east-2:636920964135:table/StarWarsPeople2
+
+  # iamRoleStatements:
+  #   - Effect: Allow
+  #     Action:
+  #       - dynamodb:*
+  #     Resource:
+  #       - arn:aws:dynamodb:us-east-2:636920964135:table/StarWarsPeople2
+
+functions:
+  api:
+    handler: .build/main.handler
+    events:
+      - httpApi:
+          path: /
+          method: get
+  swapi:
+    handler: .build/handlers/getSwapi.handler
+    events:
+      - httpApi:
+          path: /swapi/{resource}
+          method: get
+  postPeople:
+    handler: .build/handlers/postPeople.handler
+    events:
+      - httpApi:
+          path: /people
+          method: post
+  getPeople:
+    handler: .build/handlers/getPeople.handler
+    events:
+      - httpApi:
+          path: /people
+          method: get
+  getOnePeople:
+    handler: .build/handlers/getOnePeople.handler
+    events:
+      - httpApi:
+          path: /people/{id}
+          method: get
+  updatePeople:
+    handler: .build/handlers/updatePeople.handler
+    events:
+      - httpApi:
+          path: /people/{id}
+          method: put
+
+resources:
+  Resources:
+    StarWarsPeople2:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: StarWarsPeople2
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+
+# plugins:
+#   - serverless-plugin-typescript
+
+# custom:
+#   tsconfigPath: tsconfig.json
