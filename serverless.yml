@@ -14,13 +14,6 @@ provider:
           Resource:
             - arn:aws:dynamodb:us-east-2:636920964135:table/StarWarsPeople2
 
-  # iamRoleStatements:
-  #   - Effect: Allow
-  #     Action:
-  #       - dynamodb:*
-  #     Resource:
-  #       - arn:aws:dynamodb:us-east-2:636920964135:table/StarWarsPeople2
-
 functions:
   api:
     handler: .build/main.handler
@@ -72,9 +65,3 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
-
-# plugins:
-#   - serverless-plugin-typescript
-
-# custom:
-#   tsconfigPath: tsconfig.json
