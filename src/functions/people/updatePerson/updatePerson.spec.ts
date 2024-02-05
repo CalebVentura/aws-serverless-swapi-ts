@@ -1,7 +1,6 @@
-import { AWS } from "../utils/awsConfig";
+import { dynamoDBClient } from "../shared/db";
 
 module.exports.handler = async (event) => {
-  const dynamodb = new AWS.DynamoDB.DocumentClient();
 
   const { id } = event.pathParameters;
   const payload = JSON.parse(event.body);
@@ -11,9 +10,9 @@ module.exports.handler = async (event) => {
   const ExpressionAttributeValues = {};
   keys.forEach((key) => (ExpressionAttributeValues[`:${key}`] = payload[key]));
 
-  await dynamodb
+  await dynamoDBClient
     .update({
-      TableName: "StarWarsPeople2",
+      TableName: "StarWarsPeople",
       Key: { id },
       UpdateExpression,
       ExpressionAttributeValues,
@@ -22,7 +21,7 @@ module.exports.handler = async (event) => {
     .promise();
 
   return {
-    statusCode: 200,
+    status: 200,
     message: "PUT update people successfully",
     data: [],
   };

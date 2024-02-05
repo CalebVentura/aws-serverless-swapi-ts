@@ -12,52 +12,58 @@ provider:
           Action:
             - dynamodb:*
           Resource:
-            - arn:aws:dynamodb:us-east-2:636920964135:table/StarWarsPeople2
+            - arn:aws:dynamodb:us-east-2:636920964135:table/StarWarsPeople
 
 functions:
   api:
-    handler: .build/main.handler
+    handler: .build/functions/basic/hello/hello.handler
     events:
       - httpApi:
           path: /
           method: get
   swapi:
-    handler: .build/handlers/getSwapi.handler
+    handler: .build/functions/swapi/getSwapi/getSwapi.handler
     events:
       - httpApi:
           path: /swapi/{resource}
           method: get
-  postPeople:
-    handler: .build/handlers/postPeople.handler
+  postPerson:
+    handler: .build/functions/people/createPerson/createPerson.handler
     events:
       - httpApi:
           path: /people
           method: post
-  getPeople:
-    handler: .build/handlers/getPeople.handler
+  getPerson:
+    handler: .build/functions/people/getPerson/getPerson.handler
     events:
       - httpApi:
           path: /people
           method: get
-  getOnePeople:
-    handler: .build/handlers/getOnePeople.handler
+  getOnePerson:
+    handler: .build/functions/people/getOnePerson/getOnePerson.handler
     events:
       - httpApi:
           path: /people/{id}
           method: get
-  updatePeople:
-    handler: .build/handlers/updatePeople.handler
+  updatePerson:
+    handler: .build/functions/people/updatePerson/updatePerson.handler
     events:
       - httpApi:
           path: /people/{id}
           method: put
+  deletePerson:
+    handler: .build/functions/people/deletePerson/deletePerson.handler
+    events:
+      - httpApi:
+          path: /people/{id}
+          method: delete
 
 resources:
   Resources:
-    StarWarsPeople2:
+    StarWarsPeople:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: StarWarsPeople2
+        TableName: StarWarsPeople
         BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
           - AttributeName: id

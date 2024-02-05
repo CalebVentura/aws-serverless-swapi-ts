@@ -1,13 +1,12 @@
-import { AWS } from "../utils/awsConfig";
+import { dynamoDBClient } from "../shared/db";
 
 module.exports.handler = async (event) => {
-  const dynamodb = new AWS.DynamoDB.DocumentClient();
 
   const { id } = event.pathParameters;
 
-  const result = await dynamodb
+  const result = await dynamoDBClient
     .get({
-      TableName: "StarWarsPeople2",
+      TableName: "StarWarsPeople",
       Key: {
         id,
       },

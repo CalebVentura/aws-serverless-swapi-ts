@@ -1,12 +1,11 @@
-const AWS = require("aws-sdk");
+import { dynamoDBClient } from "../shared/db";
 
 module.exports.handler = async (event) => {
-  const dynamodb = new AWS.DynamoDB.DocumentClient();
   const { id } = event.pathParameters;
 
-  await dynamodb
+  await dynamoDBClient
     .delete({
-      TableName: "StarWarsPeople2",
+      TableName: "StarWarsPeople",
       Key: {
         id,
       },
