@@ -19,11 +19,7 @@ module.exports.handler = async (event) => {
 
   return {
     status: 200,
-    body: JSON.stringify({
-      message: "Datos de SWAPI extraidos correctamente",
-      data,
-    },
-    null,
-    2),
+    message: "Datos de SWAPI extraidos correctamente",
+    data,
   };
 };

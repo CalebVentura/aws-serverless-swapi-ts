@@ -11,11 +11,7 @@ module.exports.handler = async (event) => {
 
   return {
     status: 200,
-    body: JSON.stringify({
-      message: "GET people successful",
-      data,
-    },
-    null,
-    2),
+    message: "GET people successful",
+    data,
   };
 };

@@ -15,13 +15,7 @@ module.exports.handler = async (event) => {
 
   return {
     status: 200,
-    body: JSON.stringify(
-      {
-        message: "DELETE one people successful",
-        data: [],
-      },
-      null,
-      2
-    ),
+    message: "DELETE one people successful",
+    data: [],
   };
 };
