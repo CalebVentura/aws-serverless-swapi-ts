@@ -3,22 +3,38 @@ import { Person } from "../shared/types";
 import { dynamoDBClient } from "../shared/db";
 
 module.exports.handler = async (event) => {
-  const payload: Person = JSON.parse(event.body);
+  try {
+    const payload: Person = JSON.parse(event.body);
 
-  const id = v4();
-  const createdAt = new Date();
-  const newPeople = { id, ...payload, createdAt };
+    // nombre obligatorio
+    if (!payload.nombre) {
+      return {
+        status: 400,
+        message: "Bad Request: Missing required field nombre",
+      };
+    }
 
-  await dynamoDBClient
-    .put({
-      TableName: "StarWarsPeople",
-      Item: newPeople,
-    })
-    .promise();
+    const id = v4();
+    const createdAt = new Date();
+    const newPeople = { id, ...payload, createdAt };
 
-  return {
-    status: 200,
-    message: "POST people successful",
-    data: [newPeople],
-  };
+    await dynamoDBClient
+      .put({
+        TableName: "StarWarsPeople",
+        Item: newPeople,
+      })
+      .promise();
+
+    return {
+      status: 200,
+      message: "POST people successful",
+      data: [newPeople],
+    };
+  } catch (error) {
+    console.error("Error:", error);
+    return {
+      status: 500,
+      message: "Internal Server Error",
+    };
+  }
 };

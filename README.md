@@ -132,7 +132,7 @@ Esto devolverá como resultado todos los elementos que corresponden a la entidad
 ```
 https://9y5f34o3v0.execute-api.us-east-2.amazonaws.com/people
 ```
-Esto creará un personaje y se le asignará un id, el cual será usado en otras endpoints.
+Esto creará un personaje y se le asignará un id, el cual será usado en otras endpoints. El campo "nombre" es obligatorio.
 Ejemplo:
 ```json
 {

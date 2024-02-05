@@ -1,20 +1,45 @@
 import { dynamoDBClient } from "../shared/db";
 
 module.exports.handler = async (event) => {
-  const { id } = event.pathParameters;
+  try {
+    const { id } = event.pathParameters;
 
-  await dynamoDBClient
-    .delete({
-      TableName: "StarWarsPeople",
-      Key: {
-        id,
-      },
-    })
-    .promise();
+    // Se verifica si se proporciona un ID válido
+    if (!id || typeof id !== "string" || id.trim() === "") {
+      return {
+        status: 400,
+        message: "Bad Request: Invalid ID",
+      };
+    }
 
-  return {
-    status: 200,
-    message: "DELETE one people successful",
-    data: [],
-  };
+    const response = await dynamoDBClient
+      .delete({
+        TableName: "StarWarsPeople",
+        Key: {
+          id,
+        },
+        ReturnValues: "ALL_OLD", // Devolver el elemento eliminado
+      })
+      .promise();
+
+    // Verificar si se eliminó algún elemento
+    if (!response.Attributes) {
+      return {
+        status: 404,
+        message: "Not Found: No element found with the provided ID",
+      };
+    }
+
+    return {
+      status: 200,
+      message: "DELETE one people successful",
+      data: [],
+    };
+  } catch (error) {
+    console.error("Error:", error);
+    return {
+      status: 500,
+      message: "Internal Server Error",
+    };
+  }
 };
