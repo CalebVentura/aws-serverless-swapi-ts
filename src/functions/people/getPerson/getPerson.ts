@@ -1,6 +1,6 @@
-import { dynamoDBClient } from '../shared/db';
+import { dynamoDBClient } from "../../../db/dynamo";
 
-module.exports.handler = async (event) => {
+export const handler = async (event) => {
   try {
     const result = await dynamoDBClient.scan({ TableName: "StarWarsPeople" }).promise();
     const data = result.Items;

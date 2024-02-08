@@ -1,4 +1,4 @@
-module.exports.handler = async (event) => {
+export const handler = async (event) => {
   const URI_BASE_SWAPI = "https://swapi.dev/api/";
   const resource = event.pathParameters?.resource;
 

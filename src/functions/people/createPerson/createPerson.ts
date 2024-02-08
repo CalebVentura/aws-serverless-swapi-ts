@@ -1,12 +1,12 @@
 const { v4 } = require("uuid");
 import { Person } from "../shared/types";
-import { dynamoDBClient } from "../shared/db";
+import { dynamoDBClient } from "../../../db/dynamo";
 
-module.exports.handler = async (event) => {
+export const handler = async (event) => {
   try {
     const payload: Person = JSON.parse(event.body);
 
-    // nombre obligatorio
+    // The field name is obligatory
     if (!payload.nombre) {
       return {
         status: 400,
